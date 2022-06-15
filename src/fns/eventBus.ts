@@ -1,36 +1,41 @@
 
-class EventBus {
+export default class EventBus {
   private events:{
     [key: string]: Array<{fn: Function, isOnce: boolean}>
   }
+
   constructor () {
     this.events = {}
   }
-  on (eventType: string, fn: Function, isOnce: boolean) {
-    if (!eventType || !fn) return 
+
+  on (type: string, fn: Function, isOnce: boolean) {
+    if (!type || !fn) return 
     
-    if(!this.events[eventType]) this.events[eventType] = []
-    this.events[eventType].push({
+    if(!this.events[type]) this.events[type] = []
+    this.events[type].push({
       fn,
       isOnce
     })
   }
-  once (eventType: string, fn: Function) {
-    this.on(eventType, fn, true)
+
+  once (type: string, fn: Function) {
+    this.on(type, fn, true)
   }
-  off (eventType: string, fn?: Function) {
-    if (!eventType) return
+
+  off (type: string, fn?: Function) {
+    if (!type) return
 
     if (!fn) {
-      this.events[eventType] = []
+      this.events[type] = []
       return
     }
-    this.events[eventType] = this.events[eventType].filter(item => item.fn !== fn)
+    this.events[type] = this.events[type].filter(item => item.fn !== fn)
   }
-  emit (eventType: string, ...args: any[]) {
-    if (!eventType) return
+  
+  emit (type: string, ...args: any[]) {
+    if (!type) return
 
-    this.events[eventType] = this.events[eventType].filter(item => {
+    this.events[type] = this.events[type].filter(item => {
       let { fn, isOnce } = item
       fn(...args)
 
